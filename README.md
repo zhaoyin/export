@@ -5,13 +5,8 @@
 
 		```
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		/*
-		 * for(int i=0;i<13;i++){ list.add(new
-		 * Object[]{"列1","列2","列3",800+i,"列5",10000+i,800+i,10000+i,"列9","列10",
-		 * "列11","列12","列13"}); }
-		 */
-		String[] keys = { "branchSequence", "tradeCode", "tradeStatus", "traderDate", "merchantId", "userInfo",
-				"totalFee", "userFee", "userFee1", "userFe23e", "user232Fee" };
+		String[] keys = { "name", "code", "status", "memo", "free1", "free2",
+				"marketPrice", "price", "saledate", "ufree1", "ufree2" };
 		List<Column> columns = new ArrayList<Column>();
 		for (int i = 0; i < 13; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -21,7 +16,7 @@
 			map.put(keys[3], "列" + i);
 			map.put(keys[4], "列" + i);
 			map.put(keys[5], "列" + i);
-			map.put(keys[6], 25);
+			map.put(keys[6], 25+i);
 			map.put(keys[7], 12.245);
 			map.put(keys[8], new Date());
 			map.put(keys[9], "列" + i);
