@@ -29,7 +29,7 @@ public class Export implements IExport {
 	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
 	 * java.util.List, java.lang.String)
 	 */
-	public String export(List<Column> columns, List<Map<String, Object>> data, String title) {
+	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory) {
 		if (log.isDebugEnabled()) {
 			log.debug("excel export start...");
 		}
@@ -39,13 +39,13 @@ public class Export implements IExport {
 		FileOutputStream fs = null;
 		File file = null;
 		try {
-			DrawContext context = new DrawContext(columns, data, title);
+			DrawContext context = new DrawContext(columns, data, title, exportDirectory);
 			DrawWorkBook draw = new DrawWorkBook();
 			draw.build(context);
 
 			String strGuid = UUID.randomUUID().toString();
 			// 定义文件名格式并创建
-			file = File.createTempFile(context.getTitle() + "_" + strGuid, ".xls", new File("/Users/UOrder/Desktop/"));
+			file = File.createTempFile(context.getTitle() + "_" + strGuid, ".xls", context.getExportDirectory());
 
 			file.mkdirs();
 			fs = new FileOutputStream(file);

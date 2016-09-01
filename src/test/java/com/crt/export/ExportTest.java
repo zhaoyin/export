@@ -61,7 +61,7 @@ public class ExportTest {
 		}
 
 		Export export = new Export();
-		export.export(columns, list, "测试Excel");
+		export.export(columns, list, "测试Excel", "/Users/UOrder/Desktop/");
 	}
 
 }

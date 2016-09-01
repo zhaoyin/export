@@ -14,6 +14,7 @@ interface IExport {
 	 * 
 	 * 导出总方法
 	 */
-	String export(List<Column> columns, List<Map<String, Object>> data, String title) throws ExportException;
+	String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
+			throws ExportException;
 
 }

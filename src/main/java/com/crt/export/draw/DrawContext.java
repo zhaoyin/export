@@ -3,6 +3,7 @@
  */
 package com.crt.export.draw;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class DrawContext implements Serializable {
 	 */
 	private static final long serialVersionUID = -8732655585756456840L;
 
-	public DrawContext(List<Column> columns, List<Map<String, Object>> data, String title) {
+	public DrawContext(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory) {
 		this.columns = columns;
 		try {
 			this.title = new String(title.getBytes("UTF-8"), "UTF-8");
@@ -42,7 +43,21 @@ public class DrawContext implements Serializable {
 		if (data != null && !data.isEmpty()) {
 			this.data = data;
 		}
+		this.exportDir = exportDirectory;
 		this.initialize();
+	}
+
+	private String exportDir = null;
+
+	public File getExportDirectory() {
+		if (this.exportDir == null || this.exportDir.trim().length() <= 0) {
+			throw new ExportException(ExceptionEnum.UnKnownExportDirectory);
+		}
+		File file = new File(this.exportDir);
+		if (!file.exists() || !file.isDirectory()) {
+			throw new ExportException(ExceptionEnum.UnKnownExportDirectory);
+		}
+		return file;
 	}
 
 	/**
