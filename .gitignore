@@ -4,8 +4,7 @@
 .eclipse
 /logs/tmp/
 .cache
-/.settings/org.eclipse.jdt.core.prefs
-/.settings/org.eclipse.core.resources.prefs
-/eclipse/*.launch
-/eclipse/*.project
-/eclipse/*.classpath
+/.settings/*.prefs
+*.launch
+*.project
+*.classpath
