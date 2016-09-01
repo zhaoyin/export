@@ -35,12 +35,12 @@ public class Export implements IExport {
 	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
 	 * java.util.List, java.lang.String)
 	 */
-	public Future<String> export(final List<Column> columns, final List<Map<String, Object>> data, final String title, final String exportDirectory)throws ExportException {
+	public Future<String> asyncExport(final List<Column> columns, final List<Map<String, Object>> data, final String title, final String exportDirectory)throws ExportException {
 		return executor.submit(new Callable<String>() {
 
             public String call() {
                 try {
-                	return internalExport(columns,data,title,exportDirectory);
+                	return export(columns,data,title,exportDirectory);
                 } catch (ExportException e) {
                     throw e;
                 }
@@ -49,7 +49,7 @@ public class Export implements IExport {
 	}
 	
 	
-	private String internalExport(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)throws ExportException {
+	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)throws ExportException {
 		if (log.isDebugEnabled()) {
 			log.debug("excel export start...");
 		}

@@ -57,7 +57,7 @@ public class ExportTest {
 		}
 
 		Export export = new Export();
-		Future<String> result=export.export(columns, list, "测试Excel", "/Users/UOrder/Desktop/");
+		Future<String> result=export.asyncExport(columns, list, "测试Excel", "/Users/UOrder/Desktop/");
 		while (true) {  
             if (result.isDone() && !result.isCancelled()) {  
                 try {

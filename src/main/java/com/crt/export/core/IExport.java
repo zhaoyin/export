@@ -15,7 +15,9 @@ interface IExport {
 	 * 
 	 * 导出总方法
 	 */
-	Future<String> export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
+	Future<String> asyncExport(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
+			throws ExportException;
+	String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
 			throws ExportException;
 
 }
