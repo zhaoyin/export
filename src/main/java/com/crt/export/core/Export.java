@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +27,29 @@ public class Export implements IExport {
 
 	private static Logger log = LoggerFactory.getLogger(Export.class);
 
+	static ExecutorService executor = Executors.newCachedThreadPool();
+	
 	/*
 	 * 2016年8月31日 下午1:47:38
 	 * 
 	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
 	 * java.util.List, java.lang.String)
 	 */
-	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory) {
+	public Future<String> export(final List<Column> columns, final List<Map<String, Object>> data, final String title, final String exportDirectory)throws ExportException {
+		return executor.submit(new Callable<String>() {
+
+            public String call() {
+                try {
+                	return internalExport(columns,data,title,exportDirectory);
+                } catch (ExportException e) {
+                    throw e;
+                }
+            }
+        });
+	}
+	
+	
+	private String internalExport(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)throws ExportException {
 		if (log.isDebugEnabled()) {
 			log.debug("excel export start...");
 		}
@@ -54,10 +74,12 @@ public class Export implements IExport {
 			if (log.isErrorEnabled()) {
 				log.error("excel.Export--error", e);
 			}
+			throw e;
 		} catch (IOException e) {
 			if (log.isErrorEnabled()) {
 				log.error("excel.Export--error", e);
 			}
+			throw new ExportException(e);
 		} finally {
 			try {
 				fs.close();

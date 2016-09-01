@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import com.crt.export.core.Export;
 import com.crt.export.models.Column;
@@ -55,7 +57,29 @@ public class ExportTest {
 		}
 
 		Export export = new Export();
-		export.export(columns, list, "测试Excel", "/Users/UOrder/Desktop/");
+		Future<String> result=export.export(columns, list, "测试Excel", "/Users/UOrder/Desktop/");
+		while (true) {  
+            if (result.isDone() && !result.isCancelled()) {  
+                try {
+					System.out.println("Future:" + result + ",Result:"  
+					        + result.get());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}  
+                break;  
+            } else {  
+                try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}  
+            }  
+        }  
 	}
 
 }
