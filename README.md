@@ -3,7 +3,7 @@
 
 例子
 
-// TODO Auto-generated method stub
+		```
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		/*
 		 * for(int i=0;i<13;i++){ list.add(new
@@ -43,3 +43,5 @@
 
 		Export export = new Export();
 		export.export(columns, list, "测试Excel", "C:/");
+		
+		```
