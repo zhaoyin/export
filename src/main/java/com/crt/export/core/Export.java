@@ -25,31 +25,44 @@ import com.crt.export.models.Column;
  */
 public class Export implements IExport {
 
+	private Export() {
+
+	}
+
+	private static class ExportHolder {
+		public static Export exporter = new Export();
+	}
+
+	public static Export getInstance() {
+		return ExportHolder.exporter;
+	}
+
 	private static Logger log = LoggerFactory.getLogger(Export.class);
 
 	static ExecutorService executor = Executors.newCachedThreadPool();
-	
+
 	/*
 	 * 2016年8月31日 下午1:47:38
 	 * 
 	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
 	 * java.util.List, java.lang.String)
 	 */
-	public Future<String> asyncExport(final List<Column> columns, final List<Map<String, Object>> data, final String title, final String exportDirectory)throws ExportException {
+	public Future<String> asyncExport(final List<Column> columns, final List<Map<String, Object>> data,
+			final String title, final String exportDirectory) throws ExportException {
 		return executor.submit(new Callable<String>() {
 
-            public String call() {
-                try {
-                	return export(columns,data,title,exportDirectory);
-                } catch (ExportException e) {
-                    throw e;
-                }
-            }
-        });
+			public String call() {
+				try {
+					return export(columns, data, title, exportDirectory);
+				} catch (ExportException e) {
+					throw e;
+				}
+			}
+		});
 	}
-	
-	
-	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)throws ExportException {
+
+	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
+			throws ExportException {
 		if (log.isDebugEnabled()) {
 			log.debug("excel export start...");
 		}
