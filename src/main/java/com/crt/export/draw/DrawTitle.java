@@ -27,6 +27,10 @@ class DrawTitle extends AbstractDraw {
 	 * HSSFWorkbook)
 	 */
 	public void draw(DrawContext context) throws ExportException {
+		//未设置标题则不画标题
+		if (context.getTitle() == null || context.getTitle().trim().length() <= 0) {
+			return;
+		}
 		try {
 			HSSFRow row = context.addRow();
 			// 创建风格

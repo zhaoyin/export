@@ -28,7 +28,7 @@ class DrawHead extends AbstractDraw {
 		try {
 			HSSFRow row = context.addRow();
 			boolean hasSetHeight = false;
-			boolean hasRowNo = context.getDataBlock().bHasRowNo;
+			boolean hasRowNo = context.getDataBlock().getHasRowNo();
 			if (hasRowNo) {
 				HSSFCell cell = row.createCell(0);
 				HSSFCellStyle cs = context.getWorkBook().createCellStyle();

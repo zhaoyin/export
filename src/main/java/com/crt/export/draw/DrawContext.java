@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 
+import com.crt.export.core.ExportConfig;
 import com.crt.export.exception.ExceptionEnum;
 import com.crt.export.exception.ExportException;
 import com.crt.export.models.Column;
@@ -33,20 +34,37 @@ public class DrawContext implements Serializable {
 	 */
 	private static final long serialVersionUID = -8732655585756456840L;
 
-	public DrawContext(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory) {
-		this.columns = columns;
-		try {
-			this.title = new String(title.getBytes("UTF-8"), "UTF-8");
-		} catch (Exception e) {
-			this.title = "Excel Data Report";
+	public DrawContext(ExportConfig config) {
+		if (config == null) {
+			throw new ExportException(ExceptionEnum.Initialize);
 		}
-		if (data != null && !data.isEmpty()) {
-			this.data = data;
+		this.columns = config.getColumns();
+		if (config.getTitle() != null && config.getTitle().trim().length() > 0) {
+			try {
+				this.title = new String(config.getTitle().getBytes("UTF-8"), "UTF-8");
+			} catch (Exception e) {
+				this.title = "Excel Data Report";
+			}
 		}
-		this.exportDir = exportDirectory;
+		if (config.getData() != null && !config.getData().isEmpty()) {
+			this.data = config.getData();
+		}
+		this.exportDir = config.getExportDirectory();
+		if (config.getHasSumRow() != null) {
+			this.hasSumRow = config.getHasSumRow();
+		}
+		if (config.getHasRowNo() != null) {
+			this.hasRowNo = config.getHasRowNo();
+		}
+		if (config.getDataRowHeight() != null) {
+			this.iDataRowHeight = config.getDataRowHeight();
+		}
 		this.initialize();
 	}
 
+	private boolean hasSumRow = false;
+	private boolean hasRowNo = true;
+	private short iDataRowHeight = 15;
 	private String exportDir = null;
 
 	public File getExportDirectory() {
@@ -127,6 +145,9 @@ public class DrawContext implements Serializable {
 	protected DataBlock getDataBlock() {
 		if (this.dataBlock == null) {
 			this.dataBlock = new DataBlock();
+			this.dataBlock.setHasRowNo(this.hasRowNo);
+			this.dataBlock.setHasSumRow(this.hasSumRow);
+			this.dataBlock.setDataRowHeight(this.iDataRowHeight);
 		}
 		return this.dataBlock;
 	}
@@ -143,7 +164,7 @@ public class DrawContext implements Serializable {
 		if (this.columns == null || this.columns.isEmpty()) {
 			return 0;
 		}
-		if (this.getDataBlock().bHasRowNo) {
+		if (this.getDataBlock().getHasRowNo()) {
 			this.columnCount = this.columns.size() + 1;
 		} else {
 			this.columnCount = this.columns.size();
@@ -225,7 +246,7 @@ public class DrawContext implements Serializable {
 		cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 		cs.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
 
-		boolean hasRowNo = this.dataBlock.bHasRowNo;
+		boolean hasRowNo = this.dataBlock.getHasRowNo();
 		for (Column column : this.columns) {
 			if (hasRowNo) {
 				cell = row.createCell(column.getIndex() + 1);

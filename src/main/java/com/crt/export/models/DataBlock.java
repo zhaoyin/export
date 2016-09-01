@@ -11,17 +11,47 @@ public class DataBlock {
 	/**
 	 * 是否添加合计行，默认为true
 	 */
-	public boolean bHasSumRow = true;
+	private boolean hasSumRow = false;
+
+	public Boolean getHasSumRow() {
+		return this.hasSumRow;
+	}
+
+	public void setHasSumRow(Boolean hasSumRow) {
+		if (hasSumRow != null) {
+			this.hasSumRow = hasSumRow;
+		}
+	}
 
 	/**
 	 * 是否添加列序号，默认为false
 	 */
-	public boolean bHasRowNo = true;
+	private boolean hasRowNo = true;
+
+	public Boolean getHasRowNo() {
+		return this.hasRowNo;
+	}
+
+	public void setHasRowNo(Boolean hasRowNo) {
+		if (hasRowNo != null) {
+			this.hasRowNo = hasRowNo;
+		}
+	}
 
 	/**
 	 * 数据块行高
 	 */
-	public short iDataRowHeight = 15;
+	private short iDataRowHeight = 15;
+
+	public Short getDataRowHeight() {
+		return this.iDataRowHeight;
+	}
+
+	public void setDataRowHeight(Short rowHeight) {
+		if (rowHeight != null) {
+			this.iDataRowHeight = rowHeight;
+		}
+	}
 
 	private HSSFFont Font = null;
 

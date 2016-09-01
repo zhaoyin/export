@@ -12,27 +12,6 @@ public class Column {
 
 	private HSSFFont Font;
 
-	public Column() {
-
-	}
-
-	/**
-	 * 构造函数
-	 * 
-	 * @param index:序号
-	 * @param colName:列名
-	 * @param colWidth:列宽,默认100
-	 * @param colDataType:数据类型
-	 * @param colAlign:列对齐方式
-	 */
-	public Column(int index, String colName, int colWidth, short colDataType, short colAlign) {
-		this.index = index;
-		this.cShowName = colName;
-		this.iWidth = colWidth;
-		this.iDataType = colDataType;
-		this.iAlign = colAlign;
-	}
-
 	/**
 	 * 构造函数
 	 * 
@@ -43,26 +22,29 @@ public class Column {
 	 * @param colAlign:列对齐方式
 	 * @param colHidden:是否隐藏列
 	 */
-	public Column(int index, String colShowName, int colWidth, short colDataType, short colAlign, boolean colHidden) {
+	public Column(int index, String colShowName, String colFieldName, short colDataType) {
 		this.index = index;
 		this.cShowName = colShowName;
-		this.iWidth = colWidth;
 		this.iDataType = colDataType;
-		this.iAlign = colAlign;
-		this.bHidden = colHidden;
-
+		this.cFieldName = colFieldName;
 	}
 
 	/**
 	 * 构造函数
 	 * 
-	 * @param index:序号
-	 * @param colName:列名
-	 * @param colData:列取值
-	 * @param colWidth:列宽,默认100
-	 * @param colDataType:数据类型
-	 * @param colAlign:列对齐方式
-	 * @param colHidden:是否隐藏列
+	 * @param index
+	 * @param colShowName
+	 *            列名(显示)
+	 * @param colFieldName
+	 *            列名
+	 * @param colWidth
+	 *            列宽,默认150
+	 * @param colDataType
+	 *            类型
+	 * @param colAlign
+	 *            排列
+	 * @param colHidden
+	 *            是否隐藏
 	 */
 	public Column(int index, String colShowName, String colFieldName, int colWidth, short colDataType, short colAlign,
 			boolean colHidden) {
@@ -138,7 +120,7 @@ public class Column {
 	/**
 	 * 列对齐方式
 	 */
-	private short iAlign = org.apache.poi.hssf.usermodel.HSSFCellStyle.ALIGN_LEFT;
+	private short iAlign = org.apache.poi.hssf.usermodel.HSSFCellStyle.ALIGN_GENERAL;
 
 	public Short getAlign() {
 		return this.iAlign;
@@ -174,7 +156,7 @@ public class Column {
 
 	public void setSumValue(Double sumValue) {
 		if (sumValue != null) {
-			this.fSumValue +=sumValue;
+			this.fSumValue += sumValue;
 		}
 	}
 

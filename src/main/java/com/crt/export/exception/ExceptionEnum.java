@@ -8,19 +8,6 @@ package com.crt.export.exception;
  *
  */
 public enum ExceptionEnum {
-/*
-	public static final int ERR_INITIALIZE = -1001;
-	public static final int ERR_DRAWTITLE = -1002;
-	public static final int ERR_DRAWHEAD = -1003;
-	public static final int ERR_DRAWMAINDATABLOCK = -1004;
-	public static final int ERR_DRAWFOOTER = -1005;
-	public static final int ERR_WRITEFILE = -1006;
-	public static final int ERR_COLUMNTYPE = -1007;
-	public static final int ERR_DRAWBORDER = -1008;
-	public static final int ERR_NOCOLUMNINFO = -1009;
-	public static final int ERR_CREATECOLUMNSYTLE = -1010;
-	
-	*/
 	
 	Initialize(-1001,"初始化失败!")
 	,DrawTitle(-1002,"构建标题失败!")

@@ -61,28 +61,45 @@ public class Export implements IExport {
 		});
 	}
 
+	/**
+	 * 
+	 */
 	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
 			throws ExportException {
+		ExportConfig config = new ExportConfig(columns, data, exportDirectory);
+		config.setTitle(title);
+		return export(config);
+	}
+
+	/*
+	 * 2016年9月1日 下午2:02:27
+	 * 
+	 * @see com.crt.export.core.IExport#export(java.lang.String)
+	 */
+	public String export(ExportConfig config) throws ExportException {
 		if (log.isDebugEnabled()) {
 			log.debug("excel export start...");
 		}
 		if (log.isDebugEnabled()) {
-			log.debug("excel : listColumnInfo:" + columns);
+			log.debug("excel : columns:" + config.getColumns());
 		}
 		FileOutputStream fs = null;
 		File file = null;
 		try {
-			DrawContext context = new DrawContext(columns, data, title, exportDirectory);
+			DrawContext context = new DrawContext(config);
+
 			DrawWorkBook draw = new DrawWorkBook();
 			draw.build(context);
 
 			String strGuid = UUID.randomUUID().toString();
+			String fileName = context.getTitle() != null ? context.getTitle() + "_" + strGuid : strGuid;
 			// 定义文件名格式并创建
-			file = File.createTempFile(context.getTitle() + "_" + strGuid, ".xls", context.getExportDirectory());
+			file = File.createTempFile(fileName, ".xls", context.getExportDirectory());
 
 			file.mkdirs();
 			fs = new FileOutputStream(file);
 			context.getWorkBook().write(fs);
+			fs.close();
 		} catch (ExportException e) {
 			if (log.isErrorEnabled()) {
 				log.error("excel.Export--error", e);
@@ -94,10 +111,13 @@ public class Export implements IExport {
 			}
 			throw new ExportException(e);
 		} finally {
-			try {
-				fs.close();
-			} catch (IOException e) {
-				fs = null;
+			if (fs != null) {
+				try {
+					fs.close();
+				} catch (IOException e) {
+					fs = null;
+					throw new ExportException(e);
+				}
 			}
 			fs = null;
 		}

@@ -37,7 +37,7 @@ class DrawDataBlock extends AbstractDraw {
 			cs.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 			cs.setHidden(false);
 			cs.setFont(context.getDataBlock().getColumnFont(context.getWorkBook()));
-			boolean hasRowNo = context.getDataBlock().bHasRowNo;
+			boolean hasRowNo = context.getDataBlock().getHasRowNo();
 			// 根据列索引
 			for (Map<String, Object> itRow : context.getData()) {
 				HSSFRow row = context.addRow();
@@ -48,7 +48,7 @@ class DrawDataBlock extends AbstractDraw {
 					cell.setCellStyle(cs);
 				}
 
-				row.setHeight((short) (context.getDataBlock().iDataRowHeight * context.VRATIO));
+				row.setHeight((short) (context.getDataBlock().getDataRowHeight() * context.VRATIO));
 
 				for (Column column : context.getColumns()) {
 					String key = column.getFieldName();
@@ -57,7 +57,7 @@ class DrawDataBlock extends AbstractDraw {
 					}
 				}
 			}
-			if (context.getDataBlock().bHasSumRow) {
+			if (context.getDataBlock().getHasSumRow()) {
 				context.addSumRow();
 			}
 		} catch (Exception e) {
@@ -77,7 +77,7 @@ class DrawDataBlock extends AbstractDraw {
 	 */
 	private void setDataCell(DrawContext context, HSSFRow row, Column column, Object rowData) {
 		HSSFCell cell;
-		if (context.getDataBlock().bHasRowNo) {
+		if (context.getDataBlock().getHasRowNo()) {
 			cell = row.createCell(column.getIndex() + 1);
 		} else {
 			cell = row.createCell(column.getIndex());
