@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +16,10 @@ import com.crt.export.draw.DrawContext;
 import com.crt.export.draw.DrawWorkBook;
 import com.crt.export.exception.ExportException;
 import com.crt.export.models.Column;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
 /**
  * @author UOrder
@@ -39,7 +41,12 @@ public class Export implements IExport {
 
 	private static Logger log = LoggerFactory.getLogger(Export.class);
 
-	static ExecutorService executor = Executors.newCachedThreadPool();
+	// 创建线程池
+	final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+
+	IJsonConverter getJsonConverter() {
+		return null;
+	}
 
 	/*
 	 * 2016年8月31日 下午1:47:38
@@ -47,18 +54,11 @@ public class Export implements IExport {
 	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
 	 * java.util.List, java.lang.String)
 	 */
-	public Future<String> asyncExport(final List<Column> columns, final List<Map<String, Object>> data,
-			final String title, final String exportDirectory) throws ExportException {
-		return executor.submit(new Callable<String>() {
-
-			public String call() {
-				try {
-					return export(columns, data, title, exportDirectory);
-				} catch (ExportException e) {
-					throw e;
-				}
-			}
-		});
+	public void asyncExport(final List<Column> columns, final List<Map<String, Object>> data, final String title,
+			final String exportDirectory, AbstractCallback<String> callback) throws ExportException {
+		ExportConfig config = new ExportConfig(columns, data, exportDirectory);
+		config.setTitle(title);
+		asyncExport(config, callback);
 	}
 
 	/**
@@ -122,6 +122,52 @@ public class Export implements IExport {
 			fs = null;
 		}
 		return file.getAbsolutePath();
+	}
+
+	/*
+	 * 2016年9月4日 上午11:30:39
+	 * 
+	 * @see com.crt.export.core.IExport#export(java.lang.String)
+	 */
+	public String export(String jsonConfig) throws ExportException {
+		IJsonConverter converter = getJsonConverter();
+		ExportConfig config = converter.convert(jsonConfig);
+		if (config != null) {
+			return export(config);
+		}
+		return null;
+	}
+
+	/*
+	 * 2016年9月4日 上午11:30:39
+	 * 
+	 * @see com.crt.export.core.IExport#asyncExport(java.lang.String)
+	 */
+	public void asyncExport(String jsonConfig, AbstractCallback<String> callback) throws ExportException {
+		IJsonConverter converter = getJsonConverter();
+		ExportConfig config = converter.convert(jsonConfig);
+		if (config != null) {
+			asyncExport(config, callback);
+		}
+	}
+
+	/*
+	 * 2016年9月4日 上午11:34:39
+	 * 
+	 * @see
+	 * com.crt.export.core.IExport#asyncExport(com.crt.export.core.ExportConfig)
+	 */
+	public void asyncExport(final ExportConfig config, AbstractCallback<String> callback) throws ExportException {
+		ListenableFuture<String> result = service.submit(new Callable<String>() {
+			public String call() {
+				try {
+					return export(config);
+				} catch (ExportException e) {
+					throw e;
+				}
+			}
+		});
+		Futures.addCallback(result, callback);
 	}
 
 }

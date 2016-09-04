@@ -23,6 +23,7 @@ public enum ExceptionEnum {
 	,UnKnownBlock(-1013,"未知的数据区块!")
 	,UnKnownRow(-1014,"未知的行信息!")
 	,UnKnownExportDirectory(-1015,"无效的输出目录!")
+	,ConvertJson(-1016,"转换json失败！")
 	,Unknown(-1099,"未知异常!");
 	
 	private int index;

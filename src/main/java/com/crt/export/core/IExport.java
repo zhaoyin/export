@@ -2,7 +2,6 @@ package com.crt.export.core;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 import com.crt.export.exception.ExportException;
 import com.crt.export.models.Column;
@@ -11,18 +10,6 @@ import com.crt.export.models.Column;
  * 输出
  */
 interface IExport {
-	/**
-	 * 异步输出
-	 * 
-	 * @param columns
-	 * @param data
-	 * @param title
-	 * @param exportDirectory
-	 * @return
-	 * @throws ExportException
-	 */
-	Future<String> asyncExport(List<Column> columns, List<Map<String, Object>> data, String title,
-			String exportDirectory) throws ExportException;
 
 	/**
 	 * 同步输出
@@ -46,4 +33,22 @@ interface IExport {
 	 */
 	String export(ExportConfig config) throws ExportException;
 
+	String export(String jsonConfig) throws ExportException;
+
+	void asyncExport(String jsonConfig, AbstractCallback<String> callback) throws ExportException;
+
+	void asyncExport(ExportConfig config, AbstractCallback<String> callback) throws ExportException;
+
+	/**
+	 * 异步输出
+	 * 
+	 * @param columns
+	 * @param data
+	 * @param title
+	 * @param exportDirectory
+	 * @return
+	 * @throws ExportException
+	 */
+	void asyncExport(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory,
+			AbstractCallback<String> callback) throws ExportException;
 }

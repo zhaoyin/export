@@ -5,8 +5,8 @@
 
 		```
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		String[] keys = { "name", "code", "status", "memo", "free1", "free2",
-				"marketPrice", "price", "saledate", "ufree1", "ufree2" };
+		String[] keys = { "name", "code", "status", "memo", "free1", "free2", "marketPrice", "price", "saledate",
+				"ufree1", "ufree2" };
 		List<Column> columns = new ArrayList<Column>();
 		for (int i = 0; i < 13; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -16,7 +16,7 @@
 			map.put(keys[3], "列" + i);
 			map.put(keys[4], "列" + i);
 			map.put(keys[5], "列" + i);
-			map.put(keys[6], 25+i);
+			map.put(keys[6], 25 + i);
 			map.put(keys[7], 12.245);
 			map.put(keys[8], new Date());
 			map.put(keys[9], "列" + i);
@@ -36,7 +36,18 @@
 			columns.add(column);
 		}
 
-		Export export = new Export();
-		export.export(columns, list, "测试Excel", "C:/");
+		AbstractCallback<String> callback=new AbstractCallback<String>(){
+
+			public void onSuccess(String result) {
+				System.out.println("Future:" + result);
+			}
+
+			public void onFailure(Throwable t) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		Export.getInstance().asyncExport(columns, list, "测试Excel", "xxx存储文件夹路径",callback);
 		
 		```
