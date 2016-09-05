@@ -1,4 +1,4 @@
-/target/
+target/
 /bin/
 /db/
 .eclipse
@@ -8,4 +8,3 @@
 *.launch
 *.project
 *.classpath
-*.class
