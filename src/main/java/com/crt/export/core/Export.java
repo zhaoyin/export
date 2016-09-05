@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.crt.export.draw.DrawContext;
 import com.crt.export.draw.DrawWorkBook;
+import com.crt.export.exception.ExceptionEnum;
 import com.crt.export.exception.ExportException;
 import com.crt.export.models.Column;
 import com.google.common.util.concurrent.Futures;
@@ -145,6 +146,9 @@ public class Export implements IExport {
 	 */
 	public void asyncExport(String jsonConfig, AbstractCallback<String> callback) throws ExportException {
 		IJsonConverter converter = getJsonConverter();
+		if(converter==null){
+			throw new ExportException(ExceptionEnum.ConvertJson);
+		}
 		ExportConfig config = converter.convert(jsonConfig);
 		if (config != null) {
 			asyncExport(config, callback);
