@@ -45,7 +45,26 @@ public class Export implements IExport {
 	// 创建线程池
 	final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
 
-	IJsonConverter getJsonConverter() {
+	public IJsonConverter getJsonConverter() {
+		String clazz=ExportProperties.getProperty("export.converter");
+		if(clazz!=null && !clazz.isEmpty()){
+			try {
+				IJsonConverter converter=(IJsonConverter)Class.forName(clazz).newInstance();
+				return converter;
+			} catch (InstantiationException e) {
+				if(log.isErrorEnabled()){
+					log.error("Export.getJsonConverter", e);
+				}
+			} catch (IllegalAccessException e) {
+				if(log.isErrorEnabled()){
+					log.error("Export.getJsonConverter", e);
+				}
+			} catch (ClassNotFoundException e) {
+				if(log.isErrorEnabled()){
+					log.error("Export.getJsonConverter", e);
+				}
+			}
+		}
 		return null;
 	}
 

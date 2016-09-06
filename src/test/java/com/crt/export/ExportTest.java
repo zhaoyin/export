@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.crt.export.core.AbstractCallback;
 import com.crt.export.core.Export;
+import com.crt.export.core.IJsonConverter;
 import com.crt.export.models.Column;
 
 /**
@@ -67,6 +68,7 @@ public class ExportTest {
 			}
 			
 		};
+		IJsonConverter converter=Export.getInstance().getJsonConverter();
 		Export.getInstance().asyncExport(columns, list, "测试Excel", "/Users/UOrder/Desktop/",callback);
 		
 	}
