@@ -5,6 +5,7 @@ target/
 /logs/tmp/
 .cache
 /.settings/*.prefs
+/target/
 *.launch
 *.project
 *.classpath
