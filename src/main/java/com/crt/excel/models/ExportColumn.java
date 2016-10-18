@@ -1,5 +1,6 @@
 package com.crt.excel.models;
 
+import com.crt.excel.core.AlignEnum;
 import com.crt.excel.core.MetaColumn;
 
 /**
@@ -60,7 +61,7 @@ public class ExportColumn extends MetaColumn {
 	/**
 	 * 列对齐方式
 	 */
-	private short align = org.apache.poi.hssf.usermodel.HSSFCellStyle.ALIGN_GENERAL;
+	private short align = AlignEnum.GENERAL.getIndex();
 
 	public Short getAlign() {
 		return this.align;
@@ -68,7 +69,8 @@ public class ExportColumn extends MetaColumn {
 
 	protected void setAlign(Short align) {
 		if (align != null) {
-			this.align = align;
+			AlignEnum alignEnum=AlignEnum.getAlignEnum(align);
+			this.align = alignEnum.getIndex();
 		}
 	}
 
