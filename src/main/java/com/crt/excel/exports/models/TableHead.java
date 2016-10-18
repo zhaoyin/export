@@ -15,13 +15,12 @@ public class TableHead {
 	 * @param colAlign:列对齐方式
 	 * @param headName:单元格填充内容
 	 */
-	public TableHead(int index, int row, int col, int rowSpan, int colSpan, short colAlign, String headName) {
+	public TableHead(int index, int row, int rowSpan, int colSpan, short colAlign, String headName) {
 		this.index = index;
-		this.iRow = row;
-		this.iCol = col;
-		this.iRowSpan = rowSpan;
-		this.iColAlign = colAlign;
-		this.cHeadName = headName;
+		this.row = row;
+		this.rowSpan = rowSpan;
+		this.colAlign = colAlign;
+		this.headName = headName;
 	}
 
 	/**
@@ -42,90 +41,75 @@ public class TableHead {
 	/**
 	 * 表头行
 	 */
-	private int iRow;
+	private int row;
 
 	public Integer getRow() {
-		return this.iRow;
+		return this.row;
 	}
 
 	protected void setRow(Integer row) {
 		if (row != null) {
-			this.iRow = row;
-		}
-	}
-
-	/**
-	 * 表头列
-	 */
-	private int iCol;
-
-	public Integer getCol() {
-		return this.iCol;
-	}
-
-	protected void setCol(Integer col) {
-		if (col != null) {
-			this.iCol = col;
+			this.row = row;
 		}
 	}
 
 	/**
 	 * 单元格合并行数
 	 */
-	private int iRowSpan;
+	private int rowSpan;
 
 	public Integer getRowSpan() {
-		return this.iRowSpan;
+		return this.rowSpan;
 	}
 
 	protected void setRowSpan(Integer rowSpan) {
 		if (rowSpan != null) {
-			this.iRowSpan = rowSpan;
+			this.rowSpan = rowSpan;
 		}
 	}
 
 	/**
 	 * 单元格合并列数
 	 */
-	private int iColSpan = 0;
+	private int colSpan = 0;
 
 	public Integer getColSpan() {
-		return this.iColSpan;
+		return this.colSpan;
 	}
 
 	protected void setColSpan(Integer colSpan) {
 		if (colSpan != null) {
-			this.iColSpan = colSpan;
+			this.colSpan = colSpan;
 		}
 	}
 
 	/**
 	 * 单元格对齐方式
 	 */
-	private short iColAlign = org.apache.poi.hssf.usermodel.HSSFCellStyle.ALIGN_LEFT;
+	private short colAlign = org.apache.poi.hssf.usermodel.HSSFCellStyle.ALIGN_LEFT;
 
 	public Short getColAlign() {
-		return this.iColAlign;
+		return this.colAlign;
 	}
 
 	protected void setColAlign(Short colAlign) {
 		if (colAlign != null) {
-			this.iColAlign = colAlign;
+			this.colAlign = colAlign;
 		}
 	}
 
 	/**
 	 * 单元格填充内容
 	 */
-	private String cHeadName = "undefined";
+	private String headName = "undefined";
 
 	public String getHeadName() {
-		return this.cHeadName;
+		return this.headName;
 	}
 
 	protected void setHeadName(String headName) {
 		if (headName != null) {
-			this.cHeadName = headName;
+			this.headName = headName;
 		}
 	}
 

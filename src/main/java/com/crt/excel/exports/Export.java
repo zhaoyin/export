@@ -1,4 +1,4 @@
-package com.crt.excel.exports.core;
+package com.crt.excel.exports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,11 +12,12 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crt.excel.exports.draw.DrawContext;
-import com.crt.excel.exports.draw.DrawWorkBook;
-import com.crt.excel.exports.exception.ExceptionEnum;
-import com.crt.excel.exports.exception.ExportException;
-import com.crt.excel.exports.models.Column;
+import com.crt.excel.core.ExcelProperties;
+import com.crt.excel.draw.DrawContext;
+import com.crt.excel.draw.DrawWorkBook;
+import com.crt.excel.exceptions.ExportException;
+import com.crt.excel.exceptions.ExportExceptionEnum;
+import com.crt.excel.exports.models.ExportColumn;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -46,7 +47,7 @@ public class Export implements IExport {
 	final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
 
 	public IJsonConverter getJsonConverter() {
-		String clazz=ExportProperties.getProperty("export.converter");
+		String clazz=ExcelProperties.getProperty("export.converter");
 		if(clazz!=null && !clazz.isEmpty()){
 			try {
 				IJsonConverter converter=(IJsonConverter)Class.forName(clazz).newInstance();
@@ -74,19 +75,20 @@ public class Export implements IExport {
 	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
 	 * java.util.List, java.lang.String)
 	 */
-	public void asyncExport(final List<Column> columns, final List<Map<String, Object>> data, final String title,
-			final String exportDirectory, AbstractCallback<String> callback) throws ExportException {
-		ExportConfig config = new ExportConfig(columns, data, exportDirectory);
+	public void asyncExport(final List<ExportColumn> exportColumns, final List<Map<String, Object>> data, final String title,
+			final String exportDirectory, IExportCallback<String> callback) throws ExportException {
+		ExportConfig config = new ExportConfig(exportColumns, data, exportDirectory);
 		config.setTitle(title);
 		asyncExport(config, callback);
 	}
 
+	
 	/**
 	 * 
 	 */
-	public String export(List<Column> columns, List<Map<String, Object>> data, String title, String exportDirectory)
+	public String export(List<ExportColumn> exportColumns, List<Map<String, Object>> data, String title, String exportDirectory)
 			throws ExportException {
-		ExportConfig config = new ExportConfig(columns, data, exportDirectory);
+		ExportConfig config = new ExportConfig(exportColumns, data, exportDirectory);
 		config.setTitle(title);
 		return export(config);
 	}
@@ -163,10 +165,10 @@ public class Export implements IExport {
 	 * 
 	 * @see com.crt.export.core.IExport#asyncExport(java.lang.String)
 	 */
-	public void asyncExport(String jsonConfig, AbstractCallback<String> callback) throws ExportException {
+	public void asyncExport(String jsonConfig, IExportCallback<String> callback) throws ExportException {
 		IJsonConverter converter = getJsonConverter();
 		if(converter==null){
-			throw new ExportException(ExceptionEnum.ConvertJson);
+			throw new ExportException(ExportExceptionEnum.ConvertJson);
 		}
 		ExportConfig config = converter.convert(jsonConfig);
 		if (config != null) {
@@ -180,7 +182,7 @@ public class Export implements IExport {
 	 * @see
 	 * com.crt.export.core.IExport#asyncExport(com.crt.export.core.ExportConfig)
 	 */
-	public void asyncExport(final ExportConfig config, AbstractCallback<String> callback) throws ExportException {
+	public void asyncExport(final ExportConfig config, IExportCallback<String> callback) throws ExportException {
 		ListenableFuture<String> result = service.submit(new Callable<String>() {
 			public String call() {
 				try {

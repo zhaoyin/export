@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.crt.excel.exports.exception;
+package com.crt.excel.exceptions;
 
 /**
  * @author UOrder
  *
  */
-public enum ExceptionEnum {
+public enum ExportExceptionEnum {
 	
 	Initialize(-1001,"初始化失败!")
 	,DrawTitle(-1002,"构建标题失败!")
@@ -28,7 +28,7 @@ public enum ExceptionEnum {
 	
 	private int index;
 	private String caption;
-	private ExceptionEnum(int index,String caption){
+	private ExportExceptionEnum(int index,String caption){
 		this.index=index;
 		this.caption=caption;
 	}

@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.crt.excel.exports.draw;
+package com.crt.excel.draw;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import com.crt.excel.exports.exception.ExceptionEnum;
-import com.crt.excel.exports.exception.ExportException;
+import com.crt.excel.exceptions.ExportExceptionEnum;
+import com.crt.excel.exceptions.ExportException;
 
 /**
  * @author UOrder
@@ -53,7 +53,7 @@ class DrawBorder extends AbstractDraw {
 			}
 
 		} catch (Exception e) {
-			throw new ExportException(ExceptionEnum.DrawBorder);
+			throw new ExportException(ExportExceptionEnum.DrawBorder);
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.crt.excel.exports.core;
+package com.crt.excel.exports;
 
 import com.google.common.util.concurrent.FutureCallback;
 
@@ -9,6 +9,6 @@ import com.google.common.util.concurrent.FutureCallback;
  * @author UOrder
  *
  */
-public interface AbstractCallback<V> extends FutureCallback<V> {
+public interface IExportCallback<V> extends FutureCallback<V> {
 
 }

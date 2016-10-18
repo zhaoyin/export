@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.crt.excel.exports.core;
+package com.crt.excel.exports;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.crt.excel.exports.models.Column;
+import com.crt.excel.exports.models.ExportColumn;
 
 /**
  * @author UOrder
@@ -19,8 +19,8 @@ public class ExportConfig implements Serializable {
 	 */
 	private static final long serialVersionUID = -7228802994814293292L;
 
-	public ExportConfig(List<Column> columns, List<Map<String, Object>> data, String exportDirectory) {
-		this.columns = columns;
+	public ExportConfig(List<ExportColumn> exportColumns, List<Map<String, Object>> data, String exportDirectory) {
+		this.exportColumns = exportColumns;
 		this.data = data;
 		this.exportDirectory = exportDirectory;
 	}
@@ -31,10 +31,10 @@ public class ExportConfig implements Serializable {
 		return this.exportDirectory;
 	}
 
-	private List<Column> columns;
+	private List<ExportColumn> exportColumns;
 
-	public List<Column> getColumns() {
-		return this.columns;
+	public List<ExportColumn> getColumns() {
+		return this.exportColumns;
 	}
 
 	private List<Map<String, Object>> data;
@@ -55,7 +55,10 @@ public class ExportConfig implements Serializable {
 		}
 	}
 
-	private boolean hasSumRow = false;
+	/**
+	 * 是否有合计行
+	 */
+	private Boolean hasSumRow = false;
 
 	public Boolean getHasSumRow() {
 		return this.hasSumRow;
@@ -70,7 +73,7 @@ public class ExportConfig implements Serializable {
 	/**
 	 * 是否添加列序号，默认为false
 	 */
-	private boolean hasRowNo = true;
+	private Boolean hasRowNo = true;
 
 	public Boolean getHasRowNo() {
 		return this.hasRowNo;
@@ -85,15 +88,30 @@ public class ExportConfig implements Serializable {
 	/**
 	 * 数据块行高
 	 */
-	private short iDataRowHeight = 15;
+	private Short dataRowHeight = 15;
 
 	public Short getDataRowHeight() {
-		return this.iDataRowHeight;
+		return this.dataRowHeight;
 	}
 
 	public void setDataRowHeight(Short rowHeight) {
-		if (rowHeight != null) {
-			this.iDataRowHeight = rowHeight;
+		if (rowHeight != null && rowHeight > 0) {
+			this.dataRowHeight = rowHeight;
+		}
+	}
+
+	/**
+	 * 表头行行高
+	 */
+	private Short headRowHeight = 15;
+
+	public Short getHeadRowHeight() {
+		return this.headRowHeight;
+	}
+
+	public void setHeadRowHeight(Short rowHeight) {
+		if (rowHeight != null && rowHeight > 0) {
+			this.headRowHeight = rowHeight;
 		}
 	}
 }

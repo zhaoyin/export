@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.crt.excel.exports.core;
+package com.crt.excel.exports;
 
-import com.crt.excel.exports.exception.ExportException;
+import com.crt.excel.exceptions.ExportException;
 
 /**
  * @author UOrder

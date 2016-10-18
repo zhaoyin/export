@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.crt.excel.exports.core;
+package com.crt.excel.core;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,18 +15,19 @@ import org.slf4j.LoggerFactory;
  * @author UOrder
  *
  */
-class ExportProperties {
-	private static final String PROPERTIES_RESOURCE_LOCATION = "export.properties";
+public class ExcelProperties {
+	private static final String PROPERTIES_RESOURCE_LOCATION = "conf/excel.properties";
 
-	private static final Logger logger = LoggerFactory.getLogger(ExportProperties.class);
+	private static final Logger logger = LoggerFactory.getLogger(ExcelProperties.class);
 
 	private static final Properties localProperties = new Properties();
 
 	static {
 		try {
-			ClassLoader cl = ExportProperties.class.getClassLoader();
+			ClassLoader cl = ExcelProperties.class.getClassLoader();
 			URL url = (cl != null ? cl.getResource(PROPERTIES_RESOURCE_LOCATION)
 					: ClassLoader.getSystemResource(PROPERTIES_RESOURCE_LOCATION));
+			System.out.print(url.toString());
 			if (url != null) {
 				logger.info("Found 'export.properties' file in local classpath");
 				InputStream is = url.openStream();
@@ -37,6 +38,7 @@ class ExportProperties {
 				}
 			}
 		} catch (IOException ex) {
+			ex.printStackTrace();
 			if (logger.isInfoEnabled()) {
 				logger.info("Could not load 'export.properties' file from local classpath: " + ex);
 			}
