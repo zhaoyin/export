@@ -19,7 +19,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import com.crt.excel.core.TypeEnum;
 import com.crt.excel.exceptions.ExportException;
 import com.crt.excel.exceptions.ExportExceptionEnum;
-import com.crt.excel.exports.models.ExportColumn;
+import com.crt.excel.models.ExportColumn;
 
 /**
  * @author UOrder

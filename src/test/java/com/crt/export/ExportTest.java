@@ -11,7 +11,7 @@ import java.util.Map;
 
 import com.crt.excel.exports.Export;
 import com.crt.excel.exports.IExportCallback;
-import com.crt.excel.exports.models.ExportColumn;
+import com.crt.excel.models.ExportColumn;
 
 /**
  * @author UOrder

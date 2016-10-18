@@ -6,13 +6,10 @@ package com.crt.excel.imports;
 import java.util.Date;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * @author UOrder
@@ -199,16 +196,5 @@ public abstract class AbstractExcel {
     		else
     			return false;
     	}
-    }
-    
-    protected void writeString(int colIndex, Row row, String value) {
-        row.createCell(colIndex).setCellValue(value);
-    }
-    
-    protected CellStyle getCellStyle(Workbook workbook, IndexedColors color) {
-    	CellStyle style = workbook.createCellStyle();
-        style.setFillForegroundColor(color.getIndex());
-        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-        return style;
     }
 }

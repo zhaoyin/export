@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.crt.excel.imports.models;
+package com.crt.excel.models;
 
 /**
  * @author UOrder

@@ -1,4 +1,4 @@
-package com.crt.excel.exports.models;
+package com.crt.excel.models;
 
 import com.crt.excel.core.MetaColumn;
 

@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.crt.excel.core.MetaColumn;
 import com.crt.excel.exceptions.ImportException;
 import com.crt.excel.exports.Export;
-import com.crt.excel.imports.models.IDataImport;
-import com.crt.excel.imports.models.ImportResult;
+import com.crt.excel.models.ImportResult;
 
 /**
  * @author UOrder

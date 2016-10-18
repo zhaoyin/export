@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.crt.excel.imports.models;
+package com.crt.excel.models;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.crt.excel.core.MetaColumn;
-import com.crt.excel.imports.models.ImportResult;
+import com.crt.excel.models.ImportResult;
 
 /**
  * @author UOrder
