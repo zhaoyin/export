@@ -1,6 +1,5 @@
 package com.crt.excel.models;
 
-import com.crt.excel.core.AlignEnum;
 import com.crt.excel.core.MetaColumn;
 
 /**

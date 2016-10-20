@@ -36,7 +36,7 @@ abstract class AbstractImport<T> extends AbstractExcel implements IDataImport<Wo
 	private final Map<Integer, MetaColumn> metaData;
 
 	public AbstractImport(List<MetaColumn> exportColumns, Class<T> clazz, String fileName, IDataCallBack<T> callback)
-			throws Exception {
+			throws ImportException {
 		FileInputStream stream = null;
 		try {
 			File file = new File(fileName);
@@ -51,14 +51,30 @@ abstract class AbstractImport<T> extends AbstractExcel implements IDataImport<Wo
 				}
 			}
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(fileName + "不存在!");
+			if(log.isErrorEnabled()){
+				log.error("AbstractImport", e);
+			}
+			throw new ImportException(e);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			if(log.isErrorEnabled()){
+				log.error("AbstractImport", e);
+			}
+			throw new ImportException(e);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			if(log.isErrorEnabled()){
+				log.error("AbstractImport", e);
+			}
+			throw new ImportException(e);
 		} finally {
 			if (stream != null) {
-				stream.close();
+				try {
+					stream.close();
+				} catch (IOException e) {
+					if(log.isErrorEnabled()){
+						log.error("AbstractImport", e);
+					}
+					throw new ImportException(e);
+				}
 				stream = null;
 			}
 		}
