@@ -3,8 +3,12 @@ package com.crt.excel.exports;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -93,6 +97,7 @@ public class Export implements IExport {
 		return export(config);
 	}
 
+	
 	/*
 	 * 2016年9月1日 下午2:02:27
 	 * 
@@ -193,6 +198,93 @@ public class Export implements IExport {
 			}
 		});
 		Futures.addCallback(result, callback);
+	}
+
+	/* 2016年10月20日
+	 * 下午1:31:05
+	 * @see com.crt.excel.exports.IExport#asyncExport(java.lang.Class, java.util.List, java.lang.String, java.lang.String)
+	 */
+	public <T> void asyncExport(Class<T> clazz, List<T> data, String title, String exportDirectory)
+			throws ExportException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* 2016年10月20日
+	 * 下午1:31:23
+	 * @see com.crt.excel.exports.IExport#export(java.lang.Class, java.util.List, java.lang.String, java.lang.String)
+	 */
+	public <T> String export(Class<T> clazz, List<IFindValue> data, String title, String exportDirectory)
+			throws ExportException {
+		Map<String,ExportColumn> columns=getExportColumns(clazz);
+		List<Map<String,Object>> mapData=new ArrayList<Map<String,Object>>();
+		for(IFindValue t:data){
+			Set<String> fields=columns.keySet();
+			Map<String,Object> rowData=new HashMap<String,Object>();
+			for(String field:fields){
+				rowData.put(field, t.getValue(field));
+			}
+			mapData.add(rowData);
+		}
+		List<ExportColumn> columnData=new ArrayList<ExportColumn>();
+		columnData.addAll(columns.values());
+		return export(columnData,mapData,title,exportDirectory);
+	}
+	/**
+	 * 根据class获取T
+	 * @param clazz
+	 * @return
+	 */
+	private <T> Map<String,ExportColumn> getExportColumns(Class<T> clazz){
+		Field[] fields=clazz.getDeclaredFields();
+		Map<String,ExportColumn> columns=new HashMap<String,ExportColumn>();
+		int index=0;
+		for(Field field:fields){
+			if(field.getModifiers()==25){
+				continue;
+			}
+			String fieldName=field.getName();
+			String typeString=field.getType().getSimpleName();
+			short type=1;
+			//1:String 2:int 3:double 4:Date 5:short 6:boolean 7:bigDecimal 8:none 9:unknow
+			if(typeString.equalsIgnoreCase("string")){
+				type=1;
+			}else if(typeString.equalsIgnoreCase("int") || typeString.equalsIgnoreCase("integer")){
+				type=2;
+			}else if(typeString.equalsIgnoreCase("double")){
+				type=3;
+			}else if(typeString.equalsIgnoreCase("date")){
+				type=4;
+			}else if(typeString.equalsIgnoreCase("short")){
+				type=5;
+			}else if(typeString.equalsIgnoreCase("boolean")){
+				type=6;
+			}else if(typeString.equalsIgnoreCase("bigdecimal")){
+				type=7;
+			}else{
+				type=9;
+			}
+			ExportAnnotation columnDefine=field.getAnnotation(ExportAnnotation.class);
+			String showName=fieldName;
+			index+=1;
+			int width=150;
+			short align=0;
+			boolean hidden=false;
+			int format=0;
+			if(columnDefine!=null){
+				index=columnDefine.index();
+				if(columnDefine.showName()!=null && columnDefine.showName().trim().length()>0){
+					showName=columnDefine.showName();
+				}
+				width=columnDefine.width();
+				align=columnDefine.align();
+				hidden=columnDefine.hidden();
+				format=columnDefine.format();
+			}
+			ExportColumn column=new ExportColumn(index,showName,fieldName,width,type,align,hidden,format);
+			columns.put(fieldName, column);
+		}
+		return columns;
 	}
 
 }

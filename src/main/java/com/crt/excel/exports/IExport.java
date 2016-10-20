@@ -10,7 +10,16 @@ import com.crt.excel.models.ExportColumn;
  * 输出
  */
 interface IExport {
-
+	/**
+	 * 
+	 * @param clazz
+	 * @param data
+	 * @param title
+	 * @param exportDirectory
+	 * @return
+	 * @throws ExportException
+	 */
+	<T> String export(Class<T> clazz,List<IFindValue> data,String title,String exportDirectory)throws ExportException;
 	/**
 	 * 同步输出
 	 * 
@@ -51,4 +60,13 @@ interface IExport {
 	 */
 	void asyncExport(List<ExportColumn> exportColumns, List<Map<String, Object>> data, String title, String exportDirectory,
 			IExportCallback<String> callback) throws ExportException;
+	/**
+	 * 
+	 * @param clazz
+	 * @param data
+	 * @param title
+	 * @param exportDirectory
+	 * @throws ExportException
+	 */
+	<T> void asyncExport(Class<T> clazz,List<T> data,String title,String exportDirectory)throws ExportException;
 }
