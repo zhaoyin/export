@@ -187,7 +187,7 @@ public class Export implements IExport {
 	 * @see
 	 * com.crt.export.core.IExport#asyncExport(com.crt.export.core.ExportConfig)
 	 */
-	public void asyncExport(final ExportConfig config, IExportCallback<String> callback) throws ExportException {
+	private void asyncExport(final ExportConfig config, IExportCallback<String> callback) throws ExportException {
 		ListenableFuture<String> result = service.submit(new Callable<String>() {
 			public String call() {
 				try {
@@ -204,17 +204,27 @@ public class Export implements IExport {
 	 * 下午1:31:05
 	 * @see com.crt.excel.exports.IExport#asyncExport(java.lang.Class, java.util.List, java.lang.String, java.lang.String)
 	 */
-	public <T> void asyncExport(Class<T> clazz, List<T> data, String title, String exportDirectory)
+	public void asyncExport(final Class<IFindValue> clazz, final List<IFindValue> data, final String title, final String exportDirectory, IExportCallback<String> callback)
 			throws ExportException {
-		// TODO Auto-generated method stub
-		
+		ListenableFuture<String> result = service.submit(new Callable<String>() {
+			public String call() {
+				try {
+					return export(clazz,data,title,exportDirectory);
+				} catch (ExportException e) {
+					throw e;
+				}catch(Exception e){
+					throw new ExportException(e);
+				}
+			}
+		});
+		Futures.addCallback(result, callback);
 	}
-
+	
 	/* 2016年10月20日
 	 * 下午1:31:23
 	 * @see com.crt.excel.exports.IExport#export(java.lang.Class, java.util.List, java.lang.String, java.lang.String)
 	 */
-	public <T> String export(Class<T> clazz, List<IFindValue> data, String title, String exportDirectory)
+	public String export(Class<IFindValue> clazz, List<IFindValue> data, String title, String exportDirectory)
 			throws ExportException {
 		Map<String,ExportColumn> columns=getExportColumns(clazz);
 		List<Map<String,Object>> mapData=new ArrayList<Map<String,Object>>();

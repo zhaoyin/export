@@ -19,7 +19,7 @@ interface IExport {
 	 * @return
 	 * @throws ExportException
 	 */
-	<T> String export(Class<T> clazz,List<IFindValue> data,String title,String exportDirectory)throws ExportException;
+	String export(Class<IFindValue> clazz,List<IFindValue> data,String title,String exportDirectory)throws ExportException;
 	/**
 	 * 同步输出
 	 * 
@@ -41,12 +41,22 @@ interface IExport {
 	 * @throws ExportException
 	 */
 	String export(ExportConfig config) throws ExportException;
-
+	/**
+	 * 根据json导出数据
+	 * @param jsonConfig 
+	 * @see com.crt.excel.exports.ExportConfig
+	 * @return
+	 * @throws ExportException
+	 */
 	String export(String jsonConfig) throws ExportException;
-
+	/**
+	 * 根据json导出数据
+	 * @param jsonConfig
+	 * @see com.crt.excel.exports.ExportConfig
+	 * @param callback
+	 * @throws ExportException
+	 */
 	void asyncExport(String jsonConfig, IExportCallback<String> callback) throws ExportException;
-
-	void asyncExport(ExportConfig config, IExportCallback<String> callback) throws ExportException;
 
 	/**
 	 * 异步输出
@@ -68,5 +78,5 @@ interface IExport {
 	 * @param exportDirectory
 	 * @throws ExportException
 	 */
-	<T> void asyncExport(Class<T> clazz,List<T> data,String title,String exportDirectory)throws ExportException;
+	void asyncExport(Class<IFindValue> clazz,List<IFindValue> data,String title,String exportDirectory, IExportCallback<String> callback)throws ExportException;
 }
