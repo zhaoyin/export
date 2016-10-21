@@ -42,7 +42,7 @@ public class DrawContext implements Serializable {
 		if (config.getData() != null && !config.getData().isEmpty()) {
 			this.data = config.getData();
 		}
-		this.exportDir = config.getExportDirectory();
+		this.exportDir = config.exportDirectory;
 		
 		if (config.getHasSumRow() != null) {
 			this.hasSumRow = config.getHasSumRow();

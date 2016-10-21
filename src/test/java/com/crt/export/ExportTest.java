@@ -68,7 +68,7 @@ public class ExportTest {
 			
 		};
 //		IJsonConverter converter=Export.getInstance().getJsonConverter();
-		Export.getInstance().asyncExport(exportColumns, list, "测试Excel", "/Users/UOrder/Desktop/",callback);
+		Export.getInstance().asyncExport(exportColumns, list, "测试Excel", callback);
 		
 	}
 

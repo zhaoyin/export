@@ -51,21 +51,21 @@ public class Export implements IExport {
 	final static ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
 
 	public IJsonConverter getJsonConverter() {
-		String clazz=ExcelProperties.getProperty("export.converter");
-		if(clazz!=null && !clazz.isEmpty()){
+		String clazz = ExcelProperties.getProperty("export.converter");
+		if (clazz != null && !clazz.isEmpty()) {
 			try {
-				IJsonConverter converter=(IJsonConverter)Class.forName(clazz).newInstance();
+				IJsonConverter converter = (IJsonConverter) Class.forName(clazz).newInstance();
 				return converter;
 			} catch (InstantiationException e) {
-				if(log.isErrorEnabled()){
+				if (log.isErrorEnabled()) {
 					log.error("Export.getJsonConverter", e);
 				}
 			} catch (IllegalAccessException e) {
-				if(log.isErrorEnabled()){
+				if (log.isErrorEnabled()) {
 					log.error("Export.getJsonConverter", e);
 				}
 			} catch (ClassNotFoundException e) {
-				if(log.isErrorEnabled()){
+				if (log.isErrorEnabled()) {
 					log.error("Export.getJsonConverter", e);
 				}
 			}
@@ -73,31 +73,16 @@ public class Export implements IExport {
 		return null;
 	}
 
-	/*
-	 * 2016年8月31日 下午1:47:38
-	 * 
-	 * @see com.crt.export.api.IExport#export(java.util.List, java.util.List,
-	 * java.util.List, java.lang.String)
-	 */
-	public void asyncExport(final List<ExportColumn> exportColumns, final List<Map<String, Object>> data, final String title,
-			final String exportDirectory, IExportCallback<String> callback) throws ExportException {
-		ExportConfig config = new ExportConfig(exportColumns, data, exportDirectory);
-		config.setTitle(title);
-		asyncExport(config, callback);
-	}
-
-	
 	/**
 	 * 
 	 */
-	public String export(List<ExportColumn> exportColumns, List<Map<String, Object>> data, String title, String exportDirectory)
+	public String export(List<ExportColumn> exportColumns, List<Map<String, Object>> data, String title)
 			throws ExportException {
-		ExportConfig config = new ExportConfig(exportColumns, data, exportDirectory);
+		ExportConfig config = new ExportConfig(exportColumns, data);
 		config.setTitle(title);
 		return export(config);
 	}
 
-	
 	/*
 	 * 2016年9月1日 下午2:02:27
 	 * 
@@ -172,7 +157,7 @@ public class Export implements IExport {
 	 */
 	public void asyncExport(String jsonConfig, IExportCallback<String> callback) throws ExportException {
 		IJsonConverter converter = getJsonConverter();
-		if(converter==null){
+		if (converter == null) {
 			throw new ExportException(ExportExceptionEnum.ConvertJson);
 		}
 		ExportConfig config = converter.convert(jsonConfig);
@@ -200,101 +185,120 @@ public class Export implements IExport {
 		Futures.addCallback(result, callback);
 	}
 
-	/* 2016年10月20日
-	 * 下午1:31:05
-	 * @see com.crt.excel.exports.IExport#asyncExport(java.lang.Class, java.util.List, java.lang.String, java.lang.String)
+	/*
+	 * 2016年10月20日 下午1:31:23
+	 * 
+	 * @see com.crt.excel.exports.IExport#export(java.lang.Class,
+	 * java.util.List, java.lang.String)
 	 */
-	public void asyncExport(final Class<IFindValue> clazz, final List<IFindValue> data, final String title, final String exportDirectory, IExportCallback<String> callback)
-			throws ExportException {
+	public String export(Class<IFindValue> clazz, List<IFindValue> data, String title) throws ExportException {
+		Map<String, ExportColumn> columns = getExportColumns(clazz);
+		List<Map<String, Object>> mapData = new ArrayList<Map<String, Object>>();
+		for (IFindValue t : data) {
+			Set<String> fields = columns.keySet();
+			Map<String, Object> rowData = new HashMap<String, Object>();
+			for (String field : fields) {
+				rowData.put(field, t.getValue(field));
+			}
+			mapData.add(rowData);
+		}
+		List<ExportColumn> columnData = new ArrayList<ExportColumn>();
+		columnData.addAll(columns.values());
+		return export(columnData, mapData, title);
+	}
+
+	/**
+	 * 根据class获取T
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	private <T> Map<String, ExportColumn> getExportColumns(Class<T> clazz) {
+		Field[] fields = clazz.getDeclaredFields();
+		Map<String, ExportColumn> columns = new HashMap<String, ExportColumn>();
+		int index = 0;
+		for (Field field : fields) {
+			if (field.getModifiers() == 25) {
+				continue;
+			}
+			String fieldName = field.getName();
+			String typeString = field.getType().getSimpleName();
+			short type = 1;
+			// 1:String 2:int 3:double 4:Date 5:short 6:boolean 7:bigDecimal
+			// 8:none 9:unknow
+			if (typeString.equalsIgnoreCase("string")) {
+				type = 1;
+			} else if (typeString.equalsIgnoreCase("int") || typeString.equalsIgnoreCase("integer")) {
+				type = 2;
+			} else if (typeString.equalsIgnoreCase("double")) {
+				type = 3;
+			} else if (typeString.equalsIgnoreCase("date")) {
+				type = 4;
+			} else if (typeString.equalsIgnoreCase("short")) {
+				type = 5;
+			} else if (typeString.equalsIgnoreCase("boolean")) {
+				type = 6;
+			} else if (typeString.equalsIgnoreCase("bigdecimal")) {
+				type = 7;
+			} else {
+				type = 9;
+			}
+			ExportAnnotation columnDefine = field.getAnnotation(ExportAnnotation.class);
+			String showName = fieldName;
+			index += 1;
+			int width = 150;
+			short align = 0;
+			boolean hidden = false;
+			int format = 0;
+			if (columnDefine != null) {
+				index = columnDefine.index();
+				if (columnDefine.showName() != null && columnDefine.showName().trim().length() > 0) {
+					showName = columnDefine.showName();
+				}
+				width = columnDefine.width();
+				align = columnDefine.align();
+				hidden = columnDefine.hidden();
+				format = columnDefine.format();
+			}
+			ExportColumn column = new ExportColumn(index, showName, fieldName, width, type, align, hidden, format);
+			columns.put(fieldName, column);
+		}
+		return columns;
+	}
+
+	/*
+	 * 2016年10月21日 下午2:57:54
+	 * 
+	 * @see com.crt.excel.exports.IExport#asyncExport(java.util.List,
+	 * java.util.List, java.lang.String, com.crt.excel.exports.IExportCallback)
+	 */
+	public void asyncExport(final List<ExportColumn> exportColumns, final List<Map<String, Object>> data,
+			final String title, IExportCallback<String> callback) throws ExportException {
+		ExportConfig config = new ExportConfig(exportColumns, data);
+		config.setTitle(title);
+		asyncExport(config, callback);
+	}
+
+
+	/*
+	 * 2016年10月21日 下午2:57:54
+	 * 
+	 * @see com.crt.excel.exports.IExport#asyncExport(java.lang.Class,
+	 * java.util.List, java.lang.String, com.crt.excel.exports.IExportCallback)
+	 */
+	public void asyncExport(final Class<IFindValue> clazz, final List<IFindValue> data, final String title,
+			IExportCallback<String> callback) throws ExportException {
 		ListenableFuture<String> result = service.submit(new Callable<String>() {
 			public String call() {
 				try {
-					return export(clazz,data,title,exportDirectory);
+					return export(clazz, data, title);
 				} catch (ExportException e) {
 					throw e;
-				}catch(Exception e){
+				} catch (Exception e) {
 					throw new ExportException(e);
 				}
 			}
 		});
 		Futures.addCallback(result, callback);
 	}
-	
-	/* 2016年10月20日
-	 * 下午1:31:23
-	 * @see com.crt.excel.exports.IExport#export(java.lang.Class, java.util.List, java.lang.String, java.lang.String)
-	 */
-	public String export(Class<IFindValue> clazz, List<IFindValue> data, String title, String exportDirectory)
-			throws ExportException {
-		Map<String,ExportColumn> columns=getExportColumns(clazz);
-		List<Map<String,Object>> mapData=new ArrayList<Map<String,Object>>();
-		for(IFindValue t:data){
-			Set<String> fields=columns.keySet();
-			Map<String,Object> rowData=new HashMap<String,Object>();
-			for(String field:fields){
-				rowData.put(field, t.getValue(field));
-			}
-			mapData.add(rowData);
-		}
-		List<ExportColumn> columnData=new ArrayList<ExportColumn>();
-		columnData.addAll(columns.values());
-		return export(columnData,mapData,title,exportDirectory);
-	}
-	/**
-	 * 根据class获取T
-	 * @param clazz
-	 * @return
-	 */
-	private <T> Map<String,ExportColumn> getExportColumns(Class<T> clazz){
-		Field[] fields=clazz.getDeclaredFields();
-		Map<String,ExportColumn> columns=new HashMap<String,ExportColumn>();
-		int index=0;
-		for(Field field:fields){
-			if(field.getModifiers()==25){
-				continue;
-			}
-			String fieldName=field.getName();
-			String typeString=field.getType().getSimpleName();
-			short type=1;
-			//1:String 2:int 3:double 4:Date 5:short 6:boolean 7:bigDecimal 8:none 9:unknow
-			if(typeString.equalsIgnoreCase("string")){
-				type=1;
-			}else if(typeString.equalsIgnoreCase("int") || typeString.equalsIgnoreCase("integer")){
-				type=2;
-			}else if(typeString.equalsIgnoreCase("double")){
-				type=3;
-			}else if(typeString.equalsIgnoreCase("date")){
-				type=4;
-			}else if(typeString.equalsIgnoreCase("short")){
-				type=5;
-			}else if(typeString.equalsIgnoreCase("boolean")){
-				type=6;
-			}else if(typeString.equalsIgnoreCase("bigdecimal")){
-				type=7;
-			}else{
-				type=9;
-			}
-			ExportAnnotation columnDefine=field.getAnnotation(ExportAnnotation.class);
-			String showName=fieldName;
-			index+=1;
-			int width=150;
-			short align=0;
-			boolean hidden=false;
-			int format=0;
-			if(columnDefine!=null){
-				index=columnDefine.index();
-				if(columnDefine.showName()!=null && columnDefine.showName().trim().length()>0){
-					showName=columnDefine.showName();
-				}
-				width=columnDefine.width();
-				align=columnDefine.align();
-				hidden=columnDefine.hidden();
-				format=columnDefine.format();
-			}
-			ExportColumn column=new ExportColumn(index,showName,fieldName,width,type,align,hidden,format);
-			columns.put(fieldName, column);
-		}
-		return columns;
-	}
-
 }

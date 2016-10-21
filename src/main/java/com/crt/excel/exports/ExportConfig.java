@@ -19,17 +19,12 @@ public class ExportConfig implements Serializable {
 	 */
 	private static final long serialVersionUID = -7228802994814293292L;
 
-	public ExportConfig(List<ExportColumn> exportColumns, List<Map<String, Object>> data, String exportDirectory) {
+	public ExportConfig(List<ExportColumn> exportColumns, List<Map<String, Object>> data) {
 		this.exportColumns = exportColumns;
 		this.data = data;
-		this.exportDirectory = exportDirectory;
 	}
 
-	private String exportDirectory;
-
-	public String getExportDirectory() {
-		return this.exportDirectory;
-	}
+	public final String exportDirectory=System.getProperty("java.io.tmpdir");
 
 	private List<ExportColumn> exportColumns;
 
