@@ -11,6 +11,16 @@ import com.crt.excel.models.ImportResult;
  *
  */
 public interface IDataImport<WorkBook,T> {
-
+	/**
+	 * 
+	 * @return
+	 * @throws ImportException
+	 */
 	ImportResult convert()throws ImportException;
+	/**
+	 * 
+	 * @param importCallback
+	 * @throws ImportException
+	 */
+	void convert(IImportCallback<ImportResult> importCallback) throws ImportException;
 }

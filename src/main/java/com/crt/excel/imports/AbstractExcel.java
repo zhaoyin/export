@@ -15,7 +15,7 @@ import org.apache.poi.ss.usermodel.Sheet;
  * @author UOrder
  *
  */
-public abstract class AbstractExcel {
+abstract class AbstractExcel {
 	/**
 	 * 获取工作薄的行数
 	 * @param sheet
